@@ -1,0 +1,257 @@
+# ------------------------------------------------------------------------------
+# File: Intel DE10-Lite FPGA board file
+# Version: 3.0.0
+# About:
+#   TOML file for mapping top-level ports to physical Intel FPGA pins. 
+#
+#   Code proceeding a '#' will be ignored. Pins have format "# = <PORT>". 
+#   Mapping is processed in Quartus by adding a TCL command for assigning each
+#   assigned pin during implementation (place-and-route).
+#
+# Usage:
+#   1. Uncomment any pins to be assigned
+#   2. Replace '""' with the port name found in the HDL top-level entity
+#
+# Help:
+#   Manual: http://www.terasic.com.tw/cgi-bin/page/archive.pl?Language=English&No=1021&PartNo=4
+#   Schematic: https://faculty-web.msoe.edu/johnsontimoj/Common/FILES/de10-lite.pdf
+#
+# Revisions:
+#   - Enforces .board to be TOML-syntax
+#   - Makes .board an ini-syntax
+#   - Single-line comments can be started as '#' or '#'
+#   - Adds GPIO expansion header pins
+#   - Adds required DEVICE and FAMILY assignments
+#   - Adds SDRAM pins
+#   - Adds VGA pins
+#   - Fixes index descriptions on switches, buttons, and LEDS
+# ------------------------------------------------------------------------------
+
+
+# ----- Clocks -----------------------------------------------------------------
+# ------------------------------------------------------------------------------
+# P11 = "clk_sys[0]"           # MAX10_CLK1_50 50 MHz clock input 3.3-V LVTTL
+# N14 = "clk_sys[1]"           # MAX10_CLK2_50 50 MHz clock input 3.3-V LVTTL
+# N5  = "clk_adc"           # ADC_CLK_10    10 MHz clock input for ADC 3.3-V LVTTL
+
+
+# ----- Push Buttons -----------------------------------------------------------
+# NOTE: PRESS sends low logic level, RELEASE sends high logic level.
+# ------------------------------------------------------------------------------
+# B8 = "key[0]"            # KEY0 Push-button[0] 3.3-V SCHMITT TRIGGER
+# A7 = "key[1]"            # KEY1 Push-button[1] 3.3-V SCHMITT TRIGGER
+
+
+# ----- Switches ---------------------------------------------------------------
+# NOTE: UP sends high logic level, DOWN sends low logic level.
+# ------------------------------------------------------------------------------
+C10 = "message[0]"           # SW0 Slide Switch[0] 3.3-V LVTTL
+C11 = "message[1]"           # SW1 Slide Switch[1] 3.3-V LVTTL
+D12 = "message[2]"           # SW2 Slide Switch[2] 3.3-V LVTTL
+C12 = "message[3]"           # SW3 Slide Switch[3] 3.3-V LVTTL
+# A12 = "sw[4]"           # SW4 Slide Switch[4] 3.3-V LVTTL
+# B12 = "sw[5]"           # SW5 Slide Switch[5] 3.3-V LVTTL
+# A13 = "sw[6]"           # SW6 Slide Switch[6] 3.3-V LVTTL
+# A14 = "sw[7]"           # SW7 Slide Switch[7] 3.3-V LVTTL
+# B14 = "sw[8]"           # SW8 Slide Switch[8] 3.3-V LVTTL
+# F15 = "sw[9]"           # SW9 Slide Switch[9] 3.3-V LVTTL
+
+
+# ----- LEDs -------------------------------------------------------------------
+# NOTE: ON with high logic level, OFF with low logic level.
+# ------------------------------------------------------------------------------
+A8  = "encoding[0]"           # LEDR0 LED[0] 3.3-V LVTTL
+A9  = "encoding[1]"           # LEDR1 LED[1] 3.3-V LVTTL
+A10 = "encoding[2]"           # LEDR2 LED[2] 3.3-V LVTTL
+B10 = "encoding[3]"           # LEDR3 LED[3] 3.3-V LVTTL
+D13 = "encoding[4]"           # LEDR4 LED[4] 3.3-V LVTTL
+C13 = "encoding[5]"           # LEDR5 LED[5] 3.3-V LVTTL
+E14 = "encoding[6]"           # LEDR6 LED[6] 3.3-V LVTTL
+D14 = "encoding[7]"           # LEDR7 LED[7] 3.3-V LVTTL
+# A11 = "led[8]"           # LEDR8 LED[8] 3.3-V LVTTL
+# B11 = "led[9]"           # LEDR9 LED[9] 3.3-V LVTTL
+                            
+
+# ----- 7-Segment Displays -----------------------------------------------------
+# NOTE: ON with low logic level, OFF with high logic level.
+#              0
+#          ========
+#     5  //      //  1
+#       //  6   //
+#       ========
+#  4  //      //  2
+#    //      //
+#    ========    * DP 7
+#       3
+# ------------------------------------------------------------------------------
+# C14 = "ssd0[0]"           # HEX00 Seven Segment Digit 0[0] 3.3-V LVTTL
+# E15 = "ssd0[1]"           # HEX01 Seven Segment Digit 0[1] 3.3-V LVTTL
+# C15 = "ssd0[2]"           # HEX00 Seven Segment Digit 0[2] 3.3-V LVTTL
+# C16 = "ssd0[3]"           # HEX01 Seven Segment Digit 0[3] 3.3-V LVTTL
+# E16 = "ssd0[4]"           # HEX02 Seven Segment Digit 0[4] 3.3-V LVTTL
+# D17 = "ssd0[5]"           # HEX03 Seven Segment Digit 0[5] 3.3-V LVTTL
+# C17 = "ssd0[6]"           # HEX04 Seven Segment Digit 0[6] 3.3-V LVTTL
+# D15 = "ssd0[7]"           # HEX05 Seven Segment Digit 0[7], DP 3.3-V LVTTL
+
+# C18 = ""           # HEX10 Seven Segment Digit 1[0] 3.3-V LVTTL
+# D18 = ""           # HEX11 Seven Segment Digit 1[1] 3.3-V LVTTL
+# E18 = ""           # HEX12 Seven Segment Digit 1[2] 3.3-V LVTTL
+# B16 = ""           # HEX13 Seven Segment Digit 1[3] 3.3-V LVTTL
+# A17 = ""           # HEX14 Seven Segment Digit 1[4] 3.3-V LVTTL
+# A18 = ""           # HEX15 Seven Segment Digit 1[5] 3.3-V LVTTL
+# B17 = ""           # HEX16 Seven Segment Digit 1[6] 3.3-V LVTTL
+# A16 = ""           # HEX17 Seven Segment Digit 1[7], DP 3.3-V LVTTL
+
+# B20 = ""           # HEX20 Seven Segment Digit 2[0] 3.3-V LVTTL
+# A20 = ""           # HEX21 Seven Segment Digit 2[1] 3.3-V LVTTL
+# B19 = ""           # HEX22 Seven Segment Digit 2[2] 3.3-V LVTTL
+# A21 = ""           # HEX23 Seven Segment Digit 2[3] 3.3-V LVTTL
+# B21 = ""           # HEX24 Seven Segment Digit 2[4] 3.3-V LVTTL
+# C22 = ""           # HEX25 Seven Segment Digit 2[5] 3.3-V LVTTL
+# B22 = ""           # HEX26 Seven Segment Digit 2[6] 3.3-V LVTTL
+# A19 = ""           # HEX27 Seven Segment Digit 2[7], DP 3.3-V LVTTL
+
+# F21 = ""           # HEX30 Seven Segment Digit 3[0] 3.3-V LVTTL
+# E22 = ""           # HEX31 Seven Segment Digit 3[1] 3.3-V LVTTL
+# E21 = ""           # HEX32 Seven Segment Digit 3[2] 3.3-V LVTTL
+# C19 = ""           # HEX33 Seven Segment Digit 3[3] 3.3-V LVTTL
+# C20 = ""           # HEX34 Seven Segment Digit 3[4] 3.3-V LVTTL
+# D19 = ""           # HEX35 Seven Segment Digit 3[5] 3.3-V LVTTL
+# E17 = ""           # HEX36 Seven Segment Digit 3[6] 3.3-V LVTTL
+# D22 = ""           # HEX37 Seven Segment Digit 3[7], DP 3.3-V LVTTL
+
+# F18 = ""           # HEX40 Seven Segment Digit 4[0] 3.3-V LVTTL
+# E20 = ""           # HEX41 Seven Segment Digit 4[1] 3.3-V LVTTL
+# E19 = ""           # HEX42 Seven Segment Digit 4[2] 3.3-V LVTTL
+# J18 = ""           # HEX43 Seven Segment Digit 4[3] 3.3-V LVTTL
+# H19 = ""           # HEX44 Seven Segment Digit 4[4] 3.3-V LVTTL
+# F19 = ""           # HEX45 Seven Segment Digit 4[5] 3.3-V LVTTL
+# F20 = ""           # HEX46 Seven Segment Digit 4[6] 3.3-V LVTTL
+# F17 = ""           # HEX47 Seven Segment Digit 4[7], DP 3.3-V LVTTL
+
+# J20 = ""           # HEX50 Seven Segment Digit 5[0] 3.3-V LVTTL
+# K20 = ""           # HEX51 Seven Segment Digit 5[1] 3.3-V LVTTL
+# L18 = ""           # HEX52 Seven Segment Digit 5[2] 3.3-V LVTTL
+# N18 = ""           # HEX53 Seven Segment Digit 5[3] 3.3-V LVTTL
+# M20 = ""           # HEX54 Seven Segment Digit 5[4] 3.3-V LVTTL
+# N19 = ""           # HEX55 Seven Segment Digit 5[5] 3.3-V LVTTL
+# N20 = ""           # HEX56 Seven Segment Digit 5[6] 3.3-V LVTTL
+# L19 = ""           # HEX57 Seven Segment Digit 5[7], DP 3.3-V LVTTL
+
+
+# ----- Video Graphics Array (VGA) ---------------------------------------------
+#                Horizontal   Vertical
+# configuration | VGA(60Hz)  | VGA(60Hz)
+# resolution    | 640x480    | 640x480
+# sync pulse    | 96         | 2
+# back porch    | 48         | 33
+# visible area  | 640        | 480
+# front porch   | 16         | 10
+# total         | 800        | 525
+# pixel clock   | 25MHz      | 25MHz
+# NOTE: sync pulses are active-low.
+# NOTE: drive low logic level to RGB data outputs when not in the visible area.
+# ------------------------------------------------------------------------------
+# AA1 = ""           # VGA_R0 VGA Red[0] 3.3-V LVTTL
+# V1  = ""           # VGA_R1 VGA Red[1] 3.3-V LVTTL
+# Y2  = ""           # VGA_R2 VGA Red[2] 3.3-V LVTTL
+# Y1  = ""           # VGA_R3 VGA Red[3] 3.3-V LVTTL
+# W1  = ""           # VGA_G0 VGA Green[0] 3.3-V LVTTL
+# T2  = ""           # VGA_G1 VGA Green[1] 3.3-V LVTTL
+# R2  = ""           # VGA_G2 VGA Green[2] 3.3-V LVTTL
+# R1  = ""           # VGA_G3 VGA Green[3] 3.3-V LVTTL
+# P1  = ""           # VGA_B0 VGA Blue[0] 3.3-V LVTTL
+# T1  = ""           # VGA_B1 VGA Blue[1] 3.3-V LVTTL
+# P4  = ""           # VGA_B2 VGA Blue[2] 3.3-V LVTTL
+# N2  = ""           # VGA_B3 VGA Blue[3] 3.3-V LVTTL
+# N3  = ""           # VGA_HS VGA Horizontal sync 3.3-V LVTTL
+# N1  = ""           # VGA_VS VGA Vertical sync 3.3-V LVTTL
+
+
+# ----- Synchronous Dynamic Random-Access Memory (SDRAM) -----------------------
+# NOTE: 64MB size, with 16-bits stored at each address.
+# ------------------------------------------------------------------------------
+# U17  = ""          # DRAM_ADDR0  SDRAM Address[0] 3.3-V LVTTL
+# W19  = ""          # DRAM_ADDR1  SDRAM Address[1] 3.3-V LVTTL
+# V18  = ""          # DRAM_ADDR2  SDRAM Address[2] 3.3-V LVTTL
+# U18  = ""          # DRAM_ADDR3  SDRAM Address[3] 3.3-V LVTTL
+# U19  = ""          # DRAM_ADDR4  SDRAM Address[4] 3.3-V LVTTL
+# T18  = ""          # DRAM_ADDR5  SDRAM Address[5] 3.3-V LVTTL
+# T19  = ""          # DRAM_ADDR6  SDRAM Address[6] 3.3-V LVTTL
+# R18  = ""          # DRAM_ADDR7  SDRAM Address[7] 3.3-V LVTTL
+# P18  = ""          # DRAM_ADDR8  SDRAM Address[8] 3.3-V LVTTL
+# P19  = ""          # DRAM_ADDR9  SDRAM Address[9] 3.3-V LVTTL
+# T20  = ""          # DRAM_ADDR10 SDRAM Address[10] 3.3-V LVTTL
+# P20  = ""          # DRAM_ADDR11 SDRAM Address[11] 3.3-V LVTTL
+# R20  = ""          # DRAM_ADDR12 SDRAM Address[12] 3.3-V LVTTL
+# Y21  = ""          # DRAM_DQ0    SDRAM Data[0] 3.3-V LVTTL
+# Y20  = ""          # DRAM_DQ1    SDRAM Data[1] 3.3-V LVTTL
+# AA22 = ""          # DRAM_DQ2    SDRAM Data[2] 3.3-V LVTTL
+# AA21 = ""          # DRAM_DQ3    SDRAM Data[3] 3.3-V LVTTL
+# Y22  = ""          # DRAM_DQ4    SDRAM Data[4] 3.3-V LVTTL
+# W22  = ""          # DRAM_DQ5    SDRAM Data[5] 3.3-V LVTTL
+# W20  = ""          # DRAM_DQ6    SDRAM Data[6] 3.3-V LVTTL
+# V21  = ""          # DRAM_DQ7    SDRAM Data[7] 3.3-V LVTTL
+# P21  = ""          # DRAM_DQ8    SDRAM Data[8] 3.3-V LVTTL
+# J22  = ""          # DRAM_DQ9    SDRAM Data[9] 3.3-V LVTTL
+# H21  = ""          # DRAM_DQ10   SDRAM Data[10] 3.3-V LVTTL
+# H22  = ""          # DRAM_DQ11   SDRAM Data[11] 3.3-V LVTTL
+# G22  = ""          # DRAM_DQ12   SDRAM Data[12] 3.3-V LVTTL
+# G20  = ""          # DRAM_DQ13   SDRAM Data[13] 3.3-V LVTTL
+# G19  = ""          # DRAM_DQ14   SDRAM Data[14] 3.3-V LVTTL
+# F22  = ""          # DRAM_DQ15   SDRAM Data[15] 3.3-V LVTTL
+# T21  = ""          # DRAM_BA0    SDRAM Bank Address[0] 3.3-V LVTTL
+# T22  = ""          # DRAM_BA1    SDRAM Bank Address[1] 3.3-V LVTTL
+# V22  = ""          # DRAM_LDQM   SDRAM byte Data Mask[0] 3.3-V LVTTL
+# J21  = ""          # DRAM_UDQM   SDRAM byte Data Mask[1] 3.3-V LVTTL
+# U22  = ""          # DRAM_RAS_N  SDRAM Row Address Strobe 3.3-V LVTTL
+# U21  = ""          # DRAM_CAS_N  SDRAM Column Address Strobe 3.3-V LVTTL
+# N22  = ""          # DRAM_CKE    SDRAM Clock Enable 3.3-V LVTTL
+# L14  = ""          # DRAM_CLK    SDRAM Clock 3.3-V LVTTL
+# V20  = ""          # DRAM_WE_N   SDRAM Write Enable 3.3-V LVTTL
+# U20  = ""          # DRAM_CS_N   SDRAM Chip Select 3.3-V LVTTL
+
+
+# ----- GPIO Expansion Headers -------------------------------------------------
+# NOTE: JP1# arranged as tall column and read left -> right, top -> bottom.
+# ------------------------------------------------------------------------------
+# V10 = ""           # GPIO_0  GPIO Connection [0] 3.3-V LVTTL
+# W10 = ""           # GPIO_1  GPIO Connection [1] 3.3-V LVTTL
+# V9  = ""           # GPIO_2  GPIO Connection [2] 3.3-V LVTTL
+# W9  = ""           # GPIO_3  GPIO Connection [3] 3.3-V LVTTL
+# V8  = ""           # GPIO_4  GPIO Connection [4] 3.3-V LVTTL
+# W8  = ""           # GPIO_5  GPIO Connection [5] 3.3-V LVTTL
+# V7  = ""           # GPIO_6  GPIO Connection [6] 3.3-V LVTTL
+# W7  = ""           # GPIO_7  GPIO Connection [7] 3.3-V LVTTL
+# W6  = ""           # GPIO_8  GPIO Connection [8] 3.3-V LVTTL
+# V5  = ""           # GPIO_9  GPIO Connection [9] 3.3-V LVTTL
+#                        # 5-V
+#                        # GND
+# W5   = ""          # GPIO_10 GPIO Connection [10] 3.3-V LVTTL
+# AA15 = ""          # GPIO_11 GPIO Connection [11] 3.3-V LVTTL
+# AA14 = ""          # GPIO_12 GPIO Connection [12] 3.3-V LVTTL
+# W13  = ""          # GPIO_13 GPIO Connection [13] 3.3-V LVTTL
+# W12  = ""          # GPIO_14 GPIO Connection [14] 3.3-V LVTTL
+# AB13 = ""          # GPIO_15 GPIO Connection [15] 3.3-V LVTTL
+# AB12 = ""          # GPIO_16 GPIO Connection [16] 3.3-V LVTTL
+# Y11  = ""          # GPIO_17 GPIO Connection [17] 3.3-V LVTTL
+# AB11 = ""          # GPIO_18 GPIO Connection [18] 3.3-V LVTTL
+# W11  = ""          # GPIO_19 GPIO Connection [19] 3.3-V LVTTL
+# AB10 = ""          # GPIO_20 GPIO Connection [20] 3.3-V LVTTL
+# AA10 = ""          # GPIO_21 GPIO Connection [21] 3.3-V LVTTL
+# AA9  = ""          # GPIO_22 GPIO Connection [22] 3.3-V LVTTL
+# Y8   = ""          # GPIO_23 GPIO Connection [23] 3.3-V LVTTL
+# AA8  = ""          # GPIO_24 GPIO Connection [24] 3.3-V LVTTL
+# Y7   = ""          # GPIO_25 GPIO Connection [25] 3.3-V LVTTL
+#                        # 3.3-V
+#                        # GND
+# AA7 = ""           # GPIO_26 GPIO Connection [26] 3.3-V LVTTL
+# Y6  = ""           # GPIO_27 GPIO Connection [27] 3.3-V LVTTL
+# AA6 = ""           # GPIO_28 GPIO Connection [28] 3.3-V LVTTL
+# Y5  = ""           # GPIO_29 GPIO Connection [29] 3.3-V LVTTL
+# AA5 = ""           # GPIO_30 GPIO Connection [30] 3.3-V LVTTL
+# Y4  = ""           # GPIO_31 GPIO Connection [31] 3.3-V LVTTL
+# AB3 = ""           # GPIO_32 GPIO Connection [32] 3.3-V LVTTL
+# Y3  = ""           # GPIO_33 GPIO Connection [33] 3.3-V LVTTL
+# AB2 = ""           # GPIO_34 GPIO Connection [34] 3.3-V LVTTL
+# AA2 = ""           # GPIO_35 GPIO Connection [35] 3.3-V LVTTL

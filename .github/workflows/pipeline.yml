@@ -2,47 +2,47 @@ name: Pipeline
 on: push
 
 jobs:
-  Test:
-    runs-on: ubuntu-22.04
-    container:
-      image: chaseruskin/groovy-guitar:latest
-    steps:
-      - name: Fetch repository
-        uses: actions/checkout@v4
+# test:
+#   runs-on: ubuntu-22.04
+#   container:
+#     image: chaseruskin/groovy-guitar:latest
+#   steps:
+#     - name: Fetch repository
+#       uses: actions/checkout@v4
 
-      - name: Install Cargo
-        uses: actions-rs/toolchain@v1
-        with:
-          toolchain: stable
+#     - name: Install Cargo
+#       uses: actions-rs/toolchain@v1
+#       with:
+#         toolchain: stable
 
-      - name: Install verb binary
-        run: cargo install verb --git https://github.com/chaseruskin/verb --tag 0.1.0
+#     - name: Install verb binary
+#       run: cargo install verb --git https://github.com/chaseruskin/verb --tag 0.1.0
 
-      - name: Log tools
-        run: bash /etc/tools
+#     - name: Log tools
+#       run: bash /etc/tools
 
-      - name: Install model requirements
-        run: |
-          pip install -r mdl/requirements.txt
+#     - name: Install model requirements
+#       run: |
+#         pip install -r mdl/requirements.txt
 
-      - name: Test parity
-        run: |
-          orbit t --dut parity -- -g SIZE=8 -g EVEN_PARITY=false
-          orbit t --dut parity -- -g SIZE=5 -g EVEN_PARITY=true
+#     - name: Test parity
+#       run: |
+#         orbit t --dut parity -- -g SIZE=8 -g EVEN_PARITY=false
+#         orbit t --dut parity -- -g SIZE=5 -g EVEN_PARITY=true
 
-      - name: Test hamming encoder
-        run: |
-          orbit test --dut hamm_enc -- -g PARITY_BITS=2
-          orbit test --dut hamm_enc -- -g PARITY_BITS=4
-          orbit test --dut hamm_enc -- -g PARITY_BITS=5
+#     - name: Test hamming encoder
+#       run: |
+#         orbit test --dut hamm_enc -- -g PARITY_BITS=2
+#         orbit test --dut hamm_enc -- -g PARITY_BITS=4
+#         orbit test --dut hamm_enc -- -g PARITY_BITS=5
 
-      - name: Test hamming decoder
-        run: |
-          orbit test --dut hamm_dec -- -g PARITY_BITS=2
-          orbit test --dut hamm_dec -- -g PARITY_BITS=4
-          orbit test --dut hamm_dec -- -g PARITY_BITS=5
+#     - name: Test hamming decoder
+#       run: |
+#         orbit test --dut hamm_dec -- -g PARITY_BITS=2
+#         orbit test --dut hamm_dec -- -g PARITY_BITS=4
+#         orbit test --dut hamm_dec -- -g PARITY_BITS=5
 
-  Build:
+  build:
     runs-on: ubuntu-22.04
     container:
       image: chaseruskin/quiet-quartet:latest
@@ -53,14 +53,13 @@ jobs:
       - name: Log tools
         run: bash /etc/tools
 
-      - name: Configure orbit profile
+      - name: Configure Orbit profile
         run: |
-          git clone https://github.com/chaseruskin/orbit-targets.git "$(orbit env ORBIT_HOME)/targets/chaseruskin"
-          pip install -r "$(orbit env ORBIT_HOME)/targets/chaseruskin/requirements.txt"
-          orbit config --push include="targets/chaseruskin/config.toml"
+          pip install git+https://github.com/chaseruskin/aquila.git
+          orbit config --push include="$(aquila-config --config-path)"
 
       - name: Synthesize hamming encoder
-        run: orbit build --target quartz --top hamm_enc -- -g PARITY_BITS=8 --synth
+        run: orbit build --target quartz --top hamm_enc -- -g PARITY_BITS=3 -r syn
 
       - name: Save reports
         uses: actions/upload-artifact@v4

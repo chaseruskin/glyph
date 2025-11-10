@@ -1,8 +1,8 @@
 # `hamming`
 
-## Overview
-
 A generic VHDL implementation for encoding and decoding of the error-correction hamming code.
+
+## Overview
 
 The implementation uses the "extended" hamming-code, where the 0th bit is an additional parity check against the entire data block for double-error detection (DED). The hardware is described in strictly _combinational logic_.
 
@@ -22,11 +22,9 @@ A single erroneous bit can be corrected for each hamming-code block (SEC). Any b
 
 ## Organization
 
-- `/board`: pin assignments for FPGA devices
-- `/docs`: references, notes, and specifications
+- `/dc`: design constraints
 - `/rtl`: synthesizable HDL code
 - `/sim`: simulation testbench code
-- `/mdl`: simulation model code
 
 ## Reference
 

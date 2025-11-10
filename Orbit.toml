@@ -1,5 +1,5 @@
-[ip]
-name    = "hamming"
+[project]
+name = "hamming"
 uuid = "cegyya7j6lsn78ftvos7pv5me"
 version = "1.0.0"
 description = "Hamming-code SECDED implementation"
@@ -8,7 +8,5 @@ public = ["rtl"]
 source = "https://github.com/chaseruskin/hamming/archive/refs/tags/{{orbit.ip.version}}.zip"
 keywords = ["ecc", "code"]
 
-# To learn more about writing the manifest, see https://chaseruskin.github.io/orbit/reference/manifest.html
-
-[dev-dependencies]
-verb = "0.1"
+[project.metadata.quartus]
+part = "10M50DAF484C7G"
