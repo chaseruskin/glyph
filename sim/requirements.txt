@@ -1,1 +1,0 @@
-verb @ git+https://github.com/chaseruskin/verb.git@trunk#egg=verb&subdirectory=src/lib/python

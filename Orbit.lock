@@ -3,8 +3,15 @@
 version = 1
 
 [[project]]
-name = "hamming"
-version = "1.0.0"
+name = "glyph"
+version = "0.1.0"
 uuid = "cegyya7j6lsn78ftvos7pv5me"
 source = "https://github.com/chaseruskin/hamming/archive/refs/tags/{{orbit.ip.version}}.zip"
+dependencies = ["steel+7hex7l1oem1qefisd25jkcni2:0.1.0"]
+
+[[project]]
+name = "steel"
+version = "0.1.0"
+uuid = "7hex7l1oem1qefisd25jkcni2"
+path = "../lib/steel"
 dependencies = []

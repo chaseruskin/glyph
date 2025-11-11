@@ -1,12 +1,14 @@
 [project]
-name = "hamming"
+name = "glyph"
 uuid = "cegyya7j6lsn78ftvos7pv5me"
-version = "1.0.0"
-description = "Hamming-code SECDED implementation"
-library = "ecc"
+version = "0.1.0"
+description = "Error-correction codes"
 public = ["rtl"]
 source = "https://github.com/chaseruskin/hamming/archive/refs/tags/{{orbit.ip.version}}.zip"
 keywords = ["ecc", "code"]
 
 [project.metadata.quartus]
 part = "10M50DAF484C7G"
+
+[dependencies]
+steel = { version = "0.1.0", path = "../lib/steel" }

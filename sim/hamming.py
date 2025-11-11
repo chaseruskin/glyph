@@ -1,30 +1,28 @@
-# File: hamming.py
-# Author: Chase Ruskin
-# Created: 2022-10-02
-# Details: 
-#   Python behavioral model for standard hamming code error-correction code.
-#
-#   Single error correction, double error detection (SECDED) using "extended
-#   hamming code" due to additional parity bit in 0th position to check overall 
-#   block parity.
-#
-#   In this script, an EVEN parity represents an even number of 1's, therefore
-#   the parity bit is set to 0. An ODD parity represents an odd number of 1's,
-#   therefore the parity bit must be set to 1 to achieve even parity.
-#
-#   The implementation is generic over the i number of PARITY_BITS, where i > 1.
-#   The Hamming-code is unreliable with errors > 2 (errors may cancel or be 
-#   unrecoverable).
-#
-#   To execute unit tests for this module, run: `python -m unittest hamming.py`.
-#
-# References:
-#   "How to send a self-correcting message (Hamming codes)" - 3Blue1Brown
-#   https://www.youtube.com/watch?v=X8jsijhllIA
-#   
-#   "Hamming code" - Wikipedia
-#   https://en.wikipedia.org/wiki/Hamming_code#[7,4]_Hamming_code
-#
+'''
+Python behavioral model for standard hamming code error-correction code.
+
+Single error correction, double error detection (SECDED) using "extended
+hamming code" due to additional parity bit in 0th position to check overall 
+block parity.
+
+In this script, an EVEN parity represents an even number of 1's, therefore
+the parity bit is set to 0. An ODD parity represents an odd number of 1's,
+therefore the parity bit must be set to 1 to achieve even parity.
+
+The implementation is generic over the i number of PARITY_BITS, where i > 1.
+The Hamming-code is unreliable with errors > 2 (errors may cancel or be 
+unrecoverable).
+
+To execute unit tests for this module, run: `python -m unittest hamming.py`.
+
+References:
+- "How to send a self-correcting message (Hamming codes)" - 3Blue1Brown
+ https://www.youtube.com/watch?v=X8jsijhllIA
+ 
+- "Hamming code" - Wikipedia
+ https://en.wikipedia.org/wiki/Hamming_code#[7,4]_Hamming_code
+'''
+
 import unittest
 from math import log
 from typing import List
@@ -68,7 +66,7 @@ def set_parity_bit(arr: List[int], use_even=True) -> bool:
     return (arr.count(1) % 2) ^ (use_even == False)
 
 
-class HammingCode:
+class HammingCodec:
 
     def __init__(self, parity_bits: int):
         self.parity_bits = parity_bits
@@ -174,18 +172,18 @@ class HammingCode:
         return chunk
 
 
-    def decode(self, block: List[int]) -> Tuple[List[int], bool, bool]:
+    def decode(self, block: List[int]) -> Tuple[List[int], int, int]:
         '''
         Transforms and formats an encoded hamming-code `block` into a decoded 
         message.
 
         Returns `(message, corrected, valid)`.
         '''
-        (block, corrected, valid) = self._decode_hamming_ecc(block)
-        return (self._destroy_hamming_block(block), corrected, valid)
+        (block, sec, ded) = self._decode_hamming_ecc(block)
+        return (self._destroy_hamming_block(block), sec, ded)
 
 
-    def _decode_hamming_ecc(self, block: List[int]) -> Tuple[List[int], bool, bool]:
+    def _decode_hamming_ecc(self, block: List[int]) -> Tuple[List[int], int, int]:
         '''
         Decodes the hamming-code. 
         
@@ -215,11 +213,11 @@ class HammingCode:
             # check if two errors were detected
             if answer.count('1') > 0:
                 # print("info: Detected a double-bit error (unrecoverable)")
-                return (block, False, False)
+                return (block, 0, 1)
             # check if there were zero errors
             else:
                 # print("info: 0 errors detected")
-                return (block, False, True)
+                return (block, 0, 0)
 
         # otherwise, use the parity bits to pinpoint location of error to correct
         i = int('0b'+answer, base=2)
@@ -227,7 +225,7 @@ class HammingCode:
 
         # fix block at the pinpointed error index according to parity bits
         block[i] ^= 1
-        return (block, True, True)
+        return (block, 1, 0)
     pass
 
 
@@ -285,7 +283,7 @@ def partition(msg: List[int]) -> List[List[int]]:
     return chunks
 
 
-def send(block: List[int], noise=None, spots=[]) -> List[int]:
+def transmit(block: List[int], noise=None, spots=[]) -> List[int]:
     '''
     Transmits a pure hamming-code block over a noisy channel 
     that may flip 0, 1, or 2 bits.
@@ -338,7 +336,7 @@ if __name__ == '__main__':
     # generate random message bits
     message = [random.randint(0, 1) for _ in range(0, DATA_BITS)]
 
-    ham = HammingCode(PARITY_BITS)
+    ham = HammingCodec(PARITY_BITS)
 
     # divide message into 11-bit chunks
     chunk = partition(message)
@@ -356,7 +354,7 @@ if __name__ == '__main__':
     display(encode)
 
     # simluate transmitting bits over a noisy channel
-    packet = send(encode.copy(), spots=[], noise=None)
+    packet = transmit(encode.copy(), spots=[], noise=None)
     print("Received:")
     display(packet)
 
@@ -405,22 +403,22 @@ class TestHammingEcc(unittest.TestCase):
         pass
 
 
-    def test_send(self):
+    def test_transmit(self):
         # flip 1 location
         message = [0, 1, 1]
-        send(message, spots=[0])
+        transmit(message, spots=[0])
         self.assertEqual(message, [1, 1, 1])
         # flip 2 locations
         message = [0, 1, 1]
-        send(message, spots=[0, 2])
+        transmit(message, spots=[0, 2])
         self.assertEqual(message, [1, 1, 0])
         # flip 1 bit
         message = [0, 1, 1, 0]
-        send(message, noise=1)
+        transmit(message, noise=1)
         self.assertNotEqual(message, [0, 1, 1, 0])
         # flip 0 bits
         message = [0, 1, 1, 0]
-        send(message, noise=0, spots=[])
+        transmit(message, noise=0, spots=[])
         self.assertEqual(message, [0, 1, 1, 0])
         pass
 

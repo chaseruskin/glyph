@@ -1,38 +1,74 @@
-import hamming
-
-from verb.model import *
-from verb import context
-
-class Parity:
-
-    def __init__(self, size: int, even_parity: bool):
-        self.size = size
-        self.is_even_par = even_parity
-
-        self.data = Signal(size)
-        self.check_bit = Signal()
-
-    def setup(self):
-        self.data.sample()
-
-    def eval(self):
-        result = hamming.set_parity_bit(self.data.get(list), use_even=self.is_even_par)
-        self.check_bit.set(int(result))
+import cocotb
+import verb as vb
+from verb import Model, Signal, Constant
 
 
-def main():
-    mdl = Parity(
-        size=context.generic('SIZE', int),
-        even_parity=context.generic('EVEN_PARITY', bool),
+def check_parity(arr: list, make_even=True) -> bool:
+    '''
+    Checks if the `arr` has an odd amount of 0's in which case the parity bit
+    must be set to '1' to achieve an even parity.
+
+    If `make_even` is set to `False`, then odd parity will be computed and will
+    seek to achieve an odd amount of '1's (including parity bit).
+    '''
+    # count the number of 1's in the list
+    return (arr.count(1) % 2) ^ (make_even == False)
+
+
+class Parity(Model):
+
+    def __init__(self):
+        self.W = Constant()
+        self.EVEN = Constant()
+
+        self.data = Signal()
+        self.check = Signal()
+        super().mirror()
+
+    def define_coverage(self):
+        from verb.coverage import CoverRange
+
+        CoverRange(
+            name="data range",
+            span=self.data.span(),
+            goal=5,
+            target=self.data
+        )
+
+        CoverRange(
+            name="check bit",
+            span=self.check.span(),
+            goal=1,
+            target=self.check
+        )
+
+        super().cover()
+
+    async def setup(self):
+        while vb.running():
+            self.randomize()
+            await vb.falling_edge()
+
+    async def model(self):
+        while vb.running():
+            await vb.rising_edge()
+            self.check.value = check_parity([int(i) for i in bin(self.data.value)[2:]], use_even=self.EVEN.value)
+            vb.assert_eq(self.check.get_handle(), self.check)
+
+
+@cocotb.test()
+async def test(top):
+    '''
+    Tests parity logic.
+    '''
+    vb.initialize(top)
+
+    mdl = Parity()
+    mdl.define_coverage()
+
+    await vb.combine(
+        cocotb.start_soon(mdl.setup()),
+        cocotb.start_soon(mdl.model()),
     )
 
-    with vectors('inputs.txt', 'i') as inputs, vectors('outputs.txt', 'o') as outputs:
-        for _ in range(1000):
-            mdl.setup()
-            inputs.push(mdl)
-            mdl.eval()
-            outputs.push(mdl)
-
-
-if __name__ == '__main__':
-    main()
+    vb.complete()
