@@ -3,8 +3,8 @@ name = "glyph"
 uuid = "cegyya7j6lsn78ftvos7pv5me"
 version = "0.1.0"
 description = "Error-correction codes"
+repository = "https://github.com/chaseruskin/glyph.git"
 public = ["rtl"]
-source = "https://github.com/chaseruskin/hamming/archive/refs/tags/{{orbit.ip.version}}.zip"
 keywords = ["ecc", "code"]
 
 [project.metadata.quartus]

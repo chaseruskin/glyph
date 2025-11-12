@@ -6,7 +6,7 @@ version = 1
 name = "glyph"
 version = "0.1.0"
 uuid = "cegyya7j6lsn78ftvos7pv5me"
-source = "https://github.com/chaseruskin/hamming/archive/refs/tags/{{orbit.ip.version}}.zip"
+source = "https://github.com/chaseruskin/glyph.git"
 dependencies = ["steel+7hex7l1oem1qefisd25jkcni2:0.1.0"]
 
 [[project]]
