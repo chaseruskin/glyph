@@ -14,3 +14,11 @@ entity golay_enc is
     parity: out logic
   );
 end entity;
+
+
+architecture gp of golay_enc is
+
+begin
+
+
+end architecture;
