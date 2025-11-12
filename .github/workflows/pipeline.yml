@@ -20,20 +20,20 @@ jobs:
 
       - name: Test parity
         run: |
-          orbit test --target ghdl --dut parity -- -g SIZE=8 -g EVEN_PARITY=false
-          orbit test --target ghdl --dut parity -- -g SIZE=5 -g EVEN_PARITY=true
+          orbit test --target ghdl --dut parity -- -r com -g W=8 -g EVEN=false
+          orbit test --target ghdl --dut parity -- -r com -g W=5 -g EVEN=true
 
-      - name: Test hamming encoder
+      - name: Test Hamming encoder
         run: |
-          orbit test --target ghdl --dut hamm_enc -- -g PARITY_BITS=2
-          orbit test --target ghdl --dut hamm_enc -- -g PARITY_BITS=4
-          orbit test --target ghdl --dut hamm_enc -- -g PARITY_BITS=5
+          orbit test --target ghdl --dut hamming_enc -- -r com -g K=4
+          orbit test --target ghdl --dut hamming_enc -- -r com -g K=32
+          orbit test --target ghdl --dut hamming_enc -- -r com -g K=64
 
-      - name: Test hamming decoder
+      - name: Test Hamming decoder
         run: |
-          orbit test --target ghdl --dut hamm_dec -- -g PARITY_BITS=2
-          orbit test --target ghdl --dut hamm_dec -- -g PARITY_BITS=4
-          orbit test --target ghdl --dut hamm_dec -- -g PARITY_BITS=5
+          orbit test --target ghdl --dut hamming_dec -- -r com -g K=4
+          orbit test --target ghdl --dut hamming_dec -- -r com -g K=32
+          orbit test --target ghdl --dut hamming_dec -- -r com -g K=64
 
   build:
     runs-on: ubuntu-22.04
@@ -51,8 +51,8 @@ jobs:
           pip install git+https://github.com/chaseruskin/aquila.git
           orbit config --push include="$(aquila-config --config-path)"
 
-      - name: Synthesize hamming encoder
-        run: orbit build --target quartz --top hamm_enc -- -g PARITY_BITS=3 -r bit
+      - name: Build Hamming encoder
+        run: orbit build --target quartz --top hamming_enc -- -r bit -g K=4
 
       - name: Save reports
         uses: actions/upload-artifact@v4

@@ -28,6 +28,7 @@ from math import log
 from typing import List
 from typing import Tuple
 import random
+import math
 
 # --- Constants ----------------------------------------------------------------
 
@@ -50,7 +51,7 @@ def _binary_space(n: int) -> List[str]:
     '''
     space = []
     for m in range(0, n):
-        space += [format(m, '0'+str(int(log(n, 2)))+'b')]
+        space += [bin(m)[2:].zfill(math.ceil(math.log2(n)))]
     return space
 
 
@@ -68,35 +69,33 @@ def set_parity_bit(arr: List[int], use_even=True) -> bool:
 
 class HammingCodec:
 
-    def __init__(self, parity_bits: int):
-        self.parity_bits = parity_bits
+    def __init__(self, data_bits: int):
+        self.data_bits = data_bits
+        self.parity_bits = HammingCodec.get_parity_bits(data_bits)
 
+    @staticmethod
+    def get_parity_bits(k: int):
+        '''
+        Finds _P_, the number of required parity bits (excluding zero-th), such
+        that K + 1 = 2^P - P.
+        '''
+        d = k + 1
+        # find P such that D = 2^P - P
+        p = 2
+        while True:
+            if d <= 2**p - p:
+                break
+            p += 1
+        return p
 
     def get_total_bits_len(self) -> int:
-        return 2**self.get_parity_bits_len()
-
+        return self.data_bits+self.get_parity_bits_len()+1
 
     def get_parity_bits_len(self) -> int:
         return self.parity_bits
 
-
     def get_data_bits_len(self) -> int:
-        return 2**self.get_parity_bits_len()-self.get_parity_bits_len()-1
-
-
-    def _get_parity_coverage(self, i: int) -> List[int]:
-        '''
-        Returns the list of indices covered by the i-th parity bit.
-        '''
-        space = _binary_space(self.get_total_bits_len())
-        subset = []
-        # check the i-th bit positions
-        for s in space:
-            if s[self.get_parity_bits_len()-i-1] == '1':
-                subset += [s]
-        # convert from binary to decimal for target indices
-        return [int('0b'+x, base=2) for x in subset]
-        
+        return self.data_bits
 
     def _create_hamming_block(self, chunk: List[int]) -> List[int]:
         '''
@@ -110,7 +109,6 @@ class HammingCodec:
             chunk.insert(2**i, 0)
         return chunk
 
-
     def _encode_hamming_ecc(self, block: List[int]) -> List[int]:
         '''
         Sets the parity bits for the Hamming-code block.
@@ -120,10 +118,10 @@ class HammingCodec:
         # questions to capture redundancy for each parity bit
         parities = []
         for i in range(0, self.get_parity_bits_len()):
-            # print('i', i)
             coverage = self._get_parity_coverage(i)
-            # print(coverage)
+            # print('p:', i, coverage)
             data_bits = [block[j] for j in coverage]
+            # data_bits = [block[j] for j in coverage]
             # print('group', i, data_bits)
             block[2**i] = set_parity_bit(data_bits)
             parities += [block[2**i]]
@@ -139,9 +137,13 @@ class HammingCodec:
         Returns the list of indices covered by the i-th parity bit.
         '''
         space = _binary_space(self.get_total_bits_len())
+        # print(space)
         subset = []
         # check the i-th bit positions
         for s in space:
+            # print(s, self.get_parity_bits_len(), i)
+            # if self.get_parity_bits_len()-i-1 >= len(s):
+            #     continue
             if s[self.get_parity_bits_len()-i-1] == '1':
                 subset += [s]
         # convert from binary to decimal for target indices
@@ -224,7 +226,11 @@ class HammingCodec:
         # print("info: Error index:", i, "("+answer+")")
 
         # fix block at the pinpointed error index according to parity bits
-        block[i] ^= 1
+        try:
+            block[i] ^= 1
+        except:
+            # if list index is out of range, then it was errors > 2
+            pass
         return (block, 1, 0)
     pass
 

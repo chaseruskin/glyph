@@ -9,14 +9,15 @@ from verb import Model, Constant, Signal
 class HammingDec(Model):
 
     def __init__(self):
-        self.PARITY_BITS = Constant()
+        self.K = Constant()
 
-        self.encoding = Signal()
-        self.message = Signal()
+        self.code = Signal()
+        self.data = Signal()
         self.sec = Signal()
         self.ded = Signal()
         super().mirror()
-        self._code = HammingCodec(self.PARITY_BITS.value)
+        self._code = HammingCodec(self.K.value)
+        print('HAMMING CODE: ('+str(self._code.get_total_bits_len())+', '+str(self._code.get_data_bits_len())+')')
         self._secret = 0
         self._packet = None
 
@@ -24,11 +25,11 @@ class HammingDec(Model):
         from verb.coverage import CoverPoint, CoverRange
 
         CoverRange(
-            name='encoding',
+            name='code',
             goal=1,
-            span=self.encoding.span(),
+            span=self.code.span(),
             max_steps=16,
-            target=self.encoding
+            target=self.code
         )
 
         CoverPoint(
@@ -54,15 +55,15 @@ class HammingDec(Model):
 
     async def setup(self):
         while vb.running():
-            self._secret = Logics(random.randint(0, self.message.max()), self._code.get_data_bits_len())
-            encoding = self._code.encode([int(i) for i in str(self._secret)][::-1])
+            self._secret = Logics(random.randint(0, self.data.max()), self._code.get_data_bits_len())
+            block = self._code.encode([int(i) for i in str(self._secret)][::-1])
             # print('msg (tx):', self._secret)
-            # print('block (tx):', encoding)
+            # print('block (tx):', block)
             # choose some bits to flip (or none) by injecting noise
-            self._packet = hamming.transmit(encoding, noise=random.randint(0, 4), spots=[])
+            self._packet = hamming.transmit(block, noise=random.randint(0, 2), spots=[])
             # print('block (rx):', self._packet)
 
-            self.encoding.value = Logics(self._packet[::-1])
+            self.code.value = Logics(self._packet[::-1])
 
             await vb.falling_edge()
 
@@ -76,7 +77,7 @@ class HammingDec(Model):
             self.sec.value = sec
             self.ded.value = ded
 
-            vb.assert_eq(self.message.get_handle(), secret)
+            vb.assert_eq(self.data.get_handle(), secret)
             vb.assert_eq(self.sec.get_handle(), self.sec)
             vb.assert_eq(self.ded.get_handle(), self.ded)
 

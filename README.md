@@ -1,32 +1,33 @@
-# `hamming`
+# Glyph
 
-A generic VHDL implementation for encoding and decoding of the error-correction hamming code.
+Hardware descriptions of error correction codes (ECC).
 
-## Overview
+## Codes
 
-The implementation uses the "extended" hamming-code, where the 0th bit is an additional parity check against the entire data block for double-error detection (DED). The hardware is described in strictly _combinational logic_.
+The currently implemented ECCs include:
+- [Hamming Code](#hamming-code)
 
-A single erroneous bit can be corrected for each hamming-code block (SEC). Any block received with an even number of errors `e` with `e` > 0 will not be valid. A block received with an odd number of errors `e` with `e` > 1 may self-correct to the incorrect original message.
+### Hamming Code
 
-`PARITY_BITS` | Block size | Data size  | Rate  
----     | --- | --- | --- 
-2       | 4   | 1   | 1/4 = 0.250
-3       | 8   | 4   | 4/8 = 0.500
-4       | 16  | 11  | 11/16 ≈ 0.688
-5       | 32  | 26  | 26/32 ≈ 0.813
-6       | 64  | 57  | 57/64 ≈ 0.891
-7       | 128 | 120 | 120/128 ≈ 0.938
-8       | 256 | 247 | 247/256 ≈ 0.965
+The implementation uses the "extended" Hamming code, where the 0th bit is an additional parity check against the entire data block for double-error detection (DED). The encoder and decoder are both implemented in purely combinational logic. The encoder and decoder are both parameterizable by the number of data bits, `K`.
 
-> __Note:__ `PARITY_BITS` does not account for the 0th extended parity bit. It is implicitly added to the block size.
+A single erroneous bit can be corrected for each Hamming code block (SEC). Any block received with an even number of errors `e` with `e` > 0 will not be valid. A block received with an odd number of errors `e` with `e` > 1 may self-correct to the incorrect original message.
 
-## Organization
+The following table highlights some example data sizes, along with their Hamming code block size and rate:
 
-- `/dc`: design constraints
-- `/rtl`: synthesizable HDL code
-- `/sim`: simulation testbench code
+Data Bits (`K`) | Parity Bits | Block Size | Rate  
+--- | ---    | --- | --- 
+1 | 3       | 4   | 1/4 = 0.250
+4 | 4       | 8   | 4/8 = 0.500
+11 | 5       | 16  | 11/16 ≈ 0.688
+26 | 6       | 32  | 26/32 ≈ 0.813
+32 | 7       | 39  | 32/39 ≈ 0.821
+57 | 7       | 64  | 57/64 ≈ 0.891
+64 | 8       | 72  | 64/72 ≈ 0.889
+120 | 8       | 128 | 120/128 ≈ 0.938
+247 | 9       | 256 | 247/256 ≈ 0.965
 
-## Reference
+## References
 
 - "How to send a self-correcting message (Hamming codes)" - 3Blue1Brown  
 https://www.youtube.com/watch?v=X8jsijhllIA

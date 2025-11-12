@@ -7,21 +7,22 @@ from verb import Model, Signal, Constant, Logics
 class HammingEnc(Model):
 
     def __init__(self):
-        self.PARITY_BITS = Constant()
+        self.K = Constant()
         
-        self.message = Signal()
-        self.encoding = Signal()
+        self.data = Signal()
+        self.code = Signal()
         super().mirror()
-        self._code = HammingCodec(self.PARITY_BITS.value)
+        self._code = HammingCodec(self.K.value)
+        print('HAMMING CODE: ('+str(self._code.get_total_bits_len())+', '+str(self._code.get_data_bits_len())+')')
 
     def define_coverage(self):
         from verb.coverage import CoverRange
 
         CoverRange(
             name='message range',
-            span=self.message.span(),
+            span=self.data.span(),
             goal=1,
-            target=self.message
+            target=self.data
         )
 
         super().cover()
@@ -34,9 +35,9 @@ class HammingEnc(Model):
     async def model(self):
         while vb.running():
             await vb.rising_edge()
-            msg = [int(i) for i in str(self.message.get_handle().value)]
+            msg = [int(i) for i in str(self.data.get_handle().value)]
             bits = self._code.encode(msg[::-1])
-            vb.assert_eq(self.encoding.get_handle(), Logics(bits[::-1]))
+            vb.assert_eq(self.code.get_handle(), Logics(bits[::-1]))
 
 
 @cocotb.test()

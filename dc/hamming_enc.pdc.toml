@@ -30,10 +30,10 @@
 # ----- Switches ---------------------------------------------------------------
 # NOTE: UP sends high logic level, DOWN sends low logic level.
 # ------------------------------------------------------------------------------
-C10 = "message[0]"           # SW0 Slide Switch[0] 3.3-V LVTTL
-C11 = "message[1]"           # SW1 Slide Switch[1] 3.3-V LVTTL
-D12 = "message[2]"           # SW2 Slide Switch[2] 3.3-V LVTTL
-C12 = "message[3]"           # SW3 Slide Switch[3] 3.3-V LVTTL
+C10 = "data[0]"           # SW0 Slide Switch[0] 3.3-V LVTTL
+C11 = "data[1]"           # SW1 Slide Switch[1] 3.3-V LVTTL
+D12 = "data[2]"           # SW2 Slide Switch[2] 3.3-V LVTTL
+C12 = "data[3]"           # SW3 Slide Switch[3] 3.3-V LVTTL
 # A12 = "sw[4]"           # SW4 Slide Switch[4] 3.3-V LVTTL
 # B12 = "sw[5]"           # SW5 Slide Switch[5] 3.3-V LVTTL
 # A13 = "sw[6]"           # SW6 Slide Switch[6] 3.3-V LVTTL
@@ -45,14 +45,14 @@ C12 = "message[3]"           # SW3 Slide Switch[3] 3.3-V LVTTL
 # ----- LEDs -------------------------------------------------------------------
 # NOTE: ON with high logic level, OFF with low logic level.
 # ------------------------------------------------------------------------------
-A8  = "encoding[0]"           # LEDR0 LED[0] 3.3-V LVTTL
-A9  = "encoding[1]"           # LEDR1 LED[1] 3.3-V LVTTL
-A10 = "encoding[2]"           # LEDR2 LED[2] 3.3-V LVTTL
-B10 = "encoding[3]"           # LEDR3 LED[3] 3.3-V LVTTL
-D13 = "encoding[4]"           # LEDR4 LED[4] 3.3-V LVTTL
-C13 = "encoding[5]"           # LEDR5 LED[5] 3.3-V LVTTL
-E14 = "encoding[6]"           # LEDR6 LED[6] 3.3-V LVTTL
-D14 = "encoding[7]"           # LEDR7 LED[7] 3.3-V LVTTL
+A8  = "code[0]"           # LEDR0 LED[0] 3.3-V LVTTL
+A9  = "code[1]"           # LEDR1 LED[1] 3.3-V LVTTL
+A10 = "code[2]"           # LEDR2 LED[2] 3.3-V LVTTL
+B10 = "code[3]"           # LEDR3 LED[3] 3.3-V LVTTL
+D13 = "code[4]"           # LEDR4 LED[4] 3.3-V LVTTL
+C13 = "code[5]"           # LEDR5 LED[5] 3.3-V LVTTL
+E14 = "code[6]"           # LEDR6 LED[6] 3.3-V LVTTL
+D14 = "code[7]"           # LEDR7 LED[7] 3.3-V LVTTL
 # A11 = "led[8]"           # LEDR8 LED[8] 3.3-V LVTTL
 # B11 = "led[9]"           # LEDR9 LED[9] 3.3-V LVTTL
                             
