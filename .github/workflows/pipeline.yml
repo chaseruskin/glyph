@@ -18,6 +18,10 @@ jobs:
           pip install git+https://github.com/chaseruskin/aquila.git
           orbit config --push include="$(aquila-config --config-path)"
 
+      - name: Test software
+        run: |
+          python3 -m unittest sim/*.py
+
       - name: Test parity
         run: |
           orbit test --target ghdl --dut parity -- -r com -g W=8 -g EVEN=false

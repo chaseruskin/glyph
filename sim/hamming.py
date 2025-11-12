@@ -29,8 +29,7 @@ from typing import List
 from typing import Tuple
 import random
 import math
-
-# --- Constants ----------------------------------------------------------------
+from . import glyph as gl
 
 # the number of parity bits (excluding additional parity bit for SECDED)
 # all other constants are derived from defining the number of parity bits
@@ -42,36 +41,14 @@ DATA_BITS = 2**PARITY_BITS-PARITY_BITS-1
 
 RATE = DATA_BITS/TOTAL_BITS
 
-# --- Classes and Functions ----------------------------------------------------
-
-def _binary_space(n: int) -> List[str]:
-    '''
-    Returns binary strings for the possible combinations of input from
-    0 to `n`.
-    '''
-    space = []
-    for m in range(0, n):
-        space += [bin(m)[2:].zfill(math.ceil(math.log2(n)))]
-    return space
-
-
-def set_parity_bit(arr: List[int], use_even=True) -> bool:
-    '''
-    Checks if the `arr` has an odd amount of 0's in which case the parity bit
-    must be set to '1' to achieve an even parity.
-
-    If `use_even` is set to `False`, then odd parity will be computed and will
-    seek to achieve an odd amount of '1's (including parity bit).
-    '''
-    # count the number of 1's in the list
-    return (arr.count(1) % 2) ^ (use_even == False)
-
-
 class HammingCodec:
 
-    def __init__(self, data_bits: int):
-        self.data_bits = data_bits
-        self.parity_bits = HammingCodec.get_parity_bits(data_bits)
+    def __init__(self, k: int):
+        '''
+        Construct a new Hamming Codec instance.
+        '''
+        self.data_bits = k
+        self.parity_bits = HammingCodec.get_parity_bits(k)
 
     @staticmethod
     def get_parity_bits(k: int):
@@ -123,12 +100,12 @@ class HammingCodec:
             data_bits = [block[j] for j in coverage]
             # data_bits = [block[j] for j in coverage]
             # print('group', i, data_bits)
-            block[2**i] = set_parity_bit(data_bits)
+            block[2**i] = gl.get_parity(data_bits)
             parities += [block[2**i]]
             pass
         # print('parities', parities)
         # set overall parity for SECDED
-        block[0] = set_parity_bit(block)
+        block[0] = gl.get_parity(block)
         return block
 
 
@@ -136,14 +113,11 @@ class HammingCodec:
         '''
         Returns the list of indices covered by the i-th parity bit.
         '''
-        space = _binary_space(self.get_total_bits_len())
+        space = (self.get_total_bits_len())
         # print(space)
         subset = []
         # check the i-th bit positions
         for s in space:
-            # print(s, self.get_parity_bits_len(), i)
-            # if self.get_parity_bits_len()-i-1 >= len(s):
-            #     continue
             if s[self.get_parity_bits_len()-i-1] == '1':
                 subset += [s]
         # convert from binary to decimal for target indices
@@ -156,7 +130,6 @@ class HammingCodec:
         block.
         '''
         block = self._create_hamming_block(message)
-        # print(block)
         return self._encode_hamming_ecc(block)
 
 
@@ -179,7 +152,7 @@ class HammingCodec:
         Transforms and formats an encoded hamming-code `block` into a decoded 
         message.
 
-        Returns `(message, corrected, valid)`.
+        Returns `(message, sec, ded)`.
         '''
         (block, sec, ded) = self._decode_hamming_ecc(block)
         return (self._destroy_hamming_block(block), sec, ded)
@@ -196,12 +169,12 @@ class HammingCodec:
         # answer the question for each parity bit
         answer = ''
         # block parity
-        par_block = set_parity_bit(block)
+        par_block = gl.get_parity(block)
         # questions to capture redundancy for each parity bit
         for i in range(self.get_parity_bits_len()-1, -1, -1):
             coverage = self._get_parity_coverage(i)
             data_bits = [block[j] for j in coverage]
-            parity = set_parity_bit(data_bits)
+            parity = gl.get_parity(data_bits)
             if parity == 0:
                 # rule out the space
                 answer += '0'
@@ -289,36 +262,6 @@ def partition(msg: List[int]) -> List[List[int]]:
     return chunks
 
 
-def transmit(block: List[int], noise=None, spots=[]) -> List[int]:
-    '''
-    Transmits a pure hamming-code block over a noisy channel 
-    that may flip 0, 1, or 2 bits.
-
-    Use `spots` to explicitly declare which positions to flip.
-    Use `noise` to explicitly set the number of flips in the transmission.
-    '''
-    # use custom-defined indices to flip
-    if len(spots) > 0:
-        for s in spots:
-            block[s] ^= 1
-        return block
-    # use random-defined amount of spots and locations
-    # use custom-defined amount of noise (0, 1, or 2)
-    if noise == None:
-        noise = random.randint(0, 2)
-    for _ in range(0, noise):
-        # select a random index not already flipped
-        flip = random.randint(0, len(block)-1)
-        while spots.count(flip) > 0:
-            flip = random.randint(0, len(block)-1)
-        # reverse the bit
-        block[flip] ^= 1
-        # remember that position is now flipped
-        spots += [flip]
-    # print("\nBits flipped during transmission:", spots, end='\n\n')
-    return block
-
-
 # --- Logic --------------------------------------------------------------------
 
 # even parity = even number of 1's -> set bit to 0
@@ -360,7 +303,7 @@ if __name__ == '__main__':
     display(encode)
 
     # simluate transmitting bits over a noisy channel
-    packet = transmit(encode.copy(), spots=[], noise=None)
+    packet = gl.transmit(encode.copy(), spots=[], noise=None)
     print("Received:")
     display(packet)
 
@@ -384,69 +327,9 @@ if __name__ == '__main__':
     pass
 
 
-# --- Tests --------------------------------------------------------------------
-
-# unit tests for various hamming functions
-class TestHammingEcc(unittest.TestCase):
-    # @todo
-    def test_smoke(self):
-        self.assertEqual(True, True)
-        pass
-
-
-    def test_bin_space(self):
-        space = _binary_space(2**1)
-        self.assertEqual(space, ['0', '1'])
-
-        space = _binary_space(2**2)
-        self.assertEqual(space, ['00', '01', '10', '11'])
-
-        space = _binary_space(2**3)
-        self.assertEqual(space, [
-            '000', '001', '010', '011',
-            '100', '101', '110', '111'
-        ])
-        pass
-
-
-    def test_transmit(self):
-        # flip 1 location
-        message = [0, 1, 1]
-        transmit(message, spots=[0])
-        self.assertEqual(message, [1, 1, 1])
-        # flip 2 locations
-        message = [0, 1, 1]
-        transmit(message, spots=[0, 2])
-        self.assertEqual(message, [1, 1, 0])
-        # flip 1 bit
-        message = [0, 1, 1, 0]
-        transmit(message, noise=1)
-        self.assertNotEqual(message, [0, 1, 1, 0])
-        # flip 0 bits
-        message = [0, 1, 1, 0]
-        transmit(message, noise=0, spots=[])
-        self.assertEqual(message, [0, 1, 1, 0])
-        pass
-
-
-    def test_get_parity_coverage(self):
-        pass
-
-
-    def test_compute_parity(self):
-        # even parity
-        check = set_parity_bit([1, 0, 0])
-        self.assertEqual(check, 1)
-
-        check = set_parity_bit([1, 0, 0, 1])
-        self.assertEqual(check, 0)
-
-        # odd parity
-        check = set_parity_bit([1, 0, 0, 1], use_even=False)
-        self.assertEqual(check, 1)
-
-        check = set_parity_bit([1, 0, 1, 1], use_even=False)
-        self.assertEqual(check, 0)
-        pass
+class TestHamming(unittest.TestCase):
+    '''
+    Test cases for the Hamming Codec.
+    '''
 
     pass

@@ -6,10 +6,11 @@ Hardware descriptions of error correction codes (ECC).
 
 The currently implemented ECCs include:
 - [Hamming Code](#hamming-code)
+- [Golay Code](#golay-code)
 
 ### Hamming Code
 
-The implementation uses the "extended" Hamming code, where the 0th bit is an additional parity check against the entire data block for double-error detection (DED). The encoder and decoder are both implemented in purely combinational logic. The encoder and decoder are both parameterizable by the number of data bits, `K`.
+The implementation uses the extended Hamming code, where the 0th bit is an additional parity check against the entire data block for double-error detection (DED). The encoder and decoder are both implemented in purely combinational logic. The encoder and decoder are both parameterizable by the number of data bits, `K`.
 
 A single erroneous bit can be corrected for each Hamming code block (SEC). Any block received with an even number of errors `e` with `e` > 0 will not be valid. A block received with an odd number of errors `e` with `e` > 1 may self-correct to the incorrect original message.
 
@@ -27,13 +28,23 @@ Data Bits (`K`) | Parity Bits | Block Size | Rate
 120 | 8       | 128 | 120/128 ≈ 0.938
 247 | 9       | 256 | 247/256 ≈ 0.965
 
+### Golay Code
+
+The implementation uses the extended binary Golay code (24, 12, 8), such that any 3-bit errors can be corrected or any 4-bit errors can be detected.
+
 ## References
 
 - "How to send a self-correcting message (Hamming codes)" - 3Blue1Brown  
 https://www.youtube.com/watch?v=X8jsijhllIA
 
 - "Hamming code" - Wikipedia  
-https://en.wikipedia.org/wiki/Hamming_code#[7,4]_Hamming_code
+https://en.wikipedia.org/wiki/Hamming_code
 
 - "Parity bit" - Wikipedia  
 https://en.wikipedia.org/wiki/Parity_bit
+
+- "Using the Golay error detection and correction code" - Hank Wallace  
+http://aqdi.com/articles/using-the-golay-error-detection-and-correction-code-3/
+
+- "Binary Golay code" - Wikipedia  
+https://en.wikipedia.org/wiki/Binary_Golay_code

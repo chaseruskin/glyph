@@ -1,4 +1,4 @@
-from hamming import HammingCodec
+from .hamming import HammingCodec
 
 import cocotb
 import verb as vb

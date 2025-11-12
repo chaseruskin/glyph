@@ -1,18 +1,7 @@
 import cocotb
 import verb as vb
 from verb import Model, Signal, Constant
-
-
-def check_parity(arr: list, make_even=True) -> bool:
-    '''
-    Checks if the `arr` has an odd amount of 0's in which case the parity bit
-    must be set to '1' to achieve an even parity.
-
-    If `make_even` is set to `False`, then odd parity will be computed and will
-    seek to achieve an odd amount of '1's (including parity bit).
-    '''
-    # count the number of 1's in the list
-    return (arr.count(1) % 2) ^ (make_even == False)
+from . import glyph as gl
 
 
 class Parity(Model):
@@ -52,7 +41,7 @@ class Parity(Model):
     async def model(self):
         while vb.running():
             await vb.rising_edge()
-            self.check.value = check_parity([int(i) for i in bin(self.data.value)[2:]], use_even=self.EVEN.value)
+            self.check.value = gl.get_parity(gl.pack(int(self.data.value)), even=self.EVEN.value)
             vb.assert_eq(self.check.get_handle(), self.check)
 
 

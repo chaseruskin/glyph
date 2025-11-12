@@ -4,13 +4,13 @@ context stl.prelude;
 library work;
 use work.hamming_pkg.all;
 
--- Generic Hamming code decoder that takes a block `encoding` and decodes
+-- Generic Hamming code decoder that takes a block `code` and decodes
 -- it with corresponding parity bits into a `message` from extended 
--- hamming code (SECDED).
+-- Hamming code (SECDED).
 --  
--- The output port `corrected` is raised when the incoming `encoding`
--- experienced a single-error correction. The output port `valid` is lowered
--- if the incoming `encoding` detected a double-bit error. 
+-- The output port `sec` is set when the incoming `code` was decoded with a
+-- single-bit error correction. The output port `ded` is set when the incoming
+-- `code` was decoded with a double-bit error detected.
 entity hamming_dec is 
   generic (
     -- Number of data bits

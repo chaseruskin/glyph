@@ -1,5 +1,5 @@
-from hamming import HammingCodec
-import hamming
+from .hamming import HammingCodec
+from . import glyph as gl
 import random
 from verb import Logics
 import cocotb
@@ -60,7 +60,7 @@ class HammingDec(Model):
             # print('msg (tx):', self._secret)
             # print('block (tx):', block)
             # choose some bits to flip (or none) by injecting noise
-            self._packet = hamming.transmit(block, noise=random.randint(0, 2), spots=[])
+            self._packet = gl.transmit(block, noise=random.randint(0, 2))
             # print('block (rx):', self._packet)
 
             self.code.value = Logics(self._packet[::-1])

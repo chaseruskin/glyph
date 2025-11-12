@@ -5,11 +5,11 @@ library work;
 use work.hamming_pkg.all;
 
 -- Generic Hamming code encoder that takes a message `data` and packages
--- it with corresponding parity bits into an `encoding` for extended 
+-- it with corresponding parity bits into a `code` for extended 
 -- Hamming code (SECDED).
 --
--- Implemented in purely combinational logic. Parity bits are set in the
--- indices corresponding to powers of 2 (0, 1, 2, 4, 8, ...).
+-- Parity bits are set in the indices corresponding to powers of 2 (0, 1, 
+-- 2, 4, 8, ...).
 entity hamming_enc is 
   generic(
     -- Number of data bits
