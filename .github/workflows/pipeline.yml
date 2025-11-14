@@ -19,25 +19,17 @@ jobs:
           orbit config --push include="$(aquila-config --config-path)"
 
       - name: Test software
-        run: |
-          python3 -m unittest sim/*.py
+        run: just test-sw
 
-      - name: Test parity
-        run: |
-          orbit test --target ghdl --dut parity -- -r com -g W=8 -g EVEN=false
-          orbit test --target ghdl --dut parity -- -r com -g W=5 -g EVEN=true
+      - name: Run simulations
+        run: just test
 
-      - name: Test Hamming encoder
-        run: |
-          orbit test --target ghdl --dut hamming_enc -- -r com -g K=4
-          orbit test --target ghdl --dut hamming_enc -- -r com -g K=32
-          orbit test --target ghdl --dut hamming_enc -- -r com -g K=64
-
-      - name: Test Hamming decoder
-        run: |
-          orbit test --target ghdl --dut hamming_dec -- -r com -g K=4
-          orbit test --target ghdl --dut hamming_dec -- -r com -g K=32
-          orbit test --target ghdl --dut hamming_dec -- -r com -g K=64
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: test
+          path: |
+            target/goku/regressions
 
   build:
     runs-on: ubuntu-22.04
@@ -58,10 +50,10 @@ jobs:
       - name: Build Hamming encoder
         run: orbit build --target quartz --top hamming_enc -- -r bit -g K=4
 
-      - name: Save reports
+      - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: build-reports
+          name: build
           path: |
             target/quartz/*.summary
             target/quartz/*.rpt

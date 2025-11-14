@@ -13,5 +13,5 @@ dependencies = ["steel+7hex7l1oem1qefisd25jkcni2:0.1.0"]
 name = "steel"
 version = "0.1.0"
 uuid = "7hex7l1oem1qefisd25jkcni2"
-path = "../lib/steel"
+path = "../../hyperspace-labs/steel"
 dependencies = []

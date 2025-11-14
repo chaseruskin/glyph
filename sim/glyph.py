@@ -2,11 +2,16 @@ import random
 import math
 import unittest
 
-def pack(num: int) -> list:
+def pack(num: int, size: int=None) -> list:
     '''
     Converts an integer into its 1s and 0s (MSB to LSB) as a list.
     '''
-    return [int(bit) for bit in bin(num)[2:]]
+    bits = [int(bit) for bit in bin(num)[2:]]
+    padded = []
+    if size is not None:
+        for _ in range(len(bits), size):
+            padded += [0]
+    return padded + bits
 
 
 def unpack(iter: list) -> int:

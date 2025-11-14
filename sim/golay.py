@@ -1,4 +1,4 @@
-from . import glyph as gl
+import glyph as gl
 import random
 import unittest
 

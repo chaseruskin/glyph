@@ -28,8 +28,7 @@ from math import log
 from typing import List
 from typing import Tuple
 import random
-import math
-from . import glyph as gl
+import glyph as gl
 
 # the number of parity bits (excluding additional parity bit for SECDED)
 # all other constants are derived from defining the number of parity bits
@@ -97,6 +96,7 @@ class HammingCodec:
         for i in range(0, self.get_parity_bits_len()):
             coverage = self._get_parity_coverage(i)
             # print('p:', i, coverage)
+            # print(block)
             data_bits = [block[j] for j in coverage]
             # data_bits = [block[j] for j in coverage]
             # print('group', i, data_bits)
@@ -113,7 +113,7 @@ class HammingCodec:
         '''
         Returns the list of indices covered by the i-th parity bit.
         '''
-        space = (self.get_total_bits_len())
+        space = gl.get_bin_space(self.get_total_bits_len())
         # print(space)
         subset = []
         # check the i-th bit positions

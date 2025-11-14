@@ -1,7 +1,7 @@
 import cocotb
 import verb as vb
 from verb import Model, Signal, Constant
-from . import glyph as gl
+import glyph as gl
 
 
 class Parity(Model):

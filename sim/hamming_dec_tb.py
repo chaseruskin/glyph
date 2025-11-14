@@ -1,5 +1,5 @@
-from .hamming import HammingCodec
-from . import glyph as gl
+from hamming import HammingCodec
+import glyph as gl
 import random
 from verb import Logics
 import cocotb

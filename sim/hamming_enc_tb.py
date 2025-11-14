@@ -1,4 +1,5 @@
-from .hamming import HammingCodec
+from hamming import HammingCodec
+import glyph as gl
 
 import cocotb
 import verb as vb
@@ -35,8 +36,7 @@ class HammingEnc(Model):
     async def model(self):
         while vb.running():
             await vb.rising_edge()
-            msg = [int(i) for i in str(self.data.get_handle().value)]
-            bits = self._code.encode(msg[::-1])
+            bits = self._code.encode(gl.pack(int(self.data.value), self.K.value)[::-1])
             vb.assert_eq(self.code.get_handle(), Logics(bits[::-1]))
 
 
