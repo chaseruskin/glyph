@@ -14,9 +14,7 @@ jobs:
         run: bash /etc/tools
 
       - name: Configure Orbit
-        run: |
-          pip install git+https://github.com/chaseruskin/aquila.git
-          orbit config --push include="$(aquila-config --config-path)"
+        run: just configure
 
       - name: Test software
         run: just test-sw
@@ -30,32 +28,3 @@ jobs:
           name: test
           path: |
             target/goku/regressions
-
-  build:
-    runs-on: ubuntu-22.04
-    container:
-      image: chaseruskin/quiet-quartet:latest
-    steps:
-      - name: Fetch repository
-        uses: actions/checkout@v4
-
-      - name: Log tools
-        run: bash /etc/tools
-
-      - name: Configure Orbit
-        run: |
-          pip install git+https://github.com/chaseruskin/aquila.git
-          orbit config --push include="$(aquila-config --config-path)"
-
-      - name: Build Hamming encoder
-        run: orbit build --target quartz --top hamming_enc -- -r bit -g K=4
-
-      - name: Upload artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: build
-          path: |
-            target/quartz/*.summary
-            target/quartz/*.rpt
-            target/quartz/*.pof
-            target/quartz/*.sof

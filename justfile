@@ -1,7 +1,7 @@
-
-# Run the suite of tests for the software models themselves
-test-sw:          
-    python -m unittest discover -s sim -p "*.py"
+# Configures the scripts used with Orbit
+configure:
+    pip install git+https://github.com/chaseruskin/verb.git@main
+    orbit config --push include="$(verb-config --config-path)"
 
 # Run the suite of hardware simulations
 test:
@@ -13,3 +13,7 @@ test:
     orbit test --keep --target goku --dut hamming_dec -- -r sim -g K=4
     orbit test --keep --target goku --dut hamming_dec -- -r sim -g K=32
     orbit test --keep --target goku --dut hamming_dec -- -r sim -g K=64
+
+# Run the suite of tests for the software models themselves
+test-sw:          
+    python -m unittest discover -s sim -p "*.py"
