@@ -7,8 +7,5 @@ repository = "https://github.com/chaseruskin/glyph.git"
 public = ["rtl"]
 keywords = ["ecc", "code"]
 
-[project.metadata.quartus]
-part = "10M50DAF484C7G"
-
 [dependencies]
 steel = "0.1"

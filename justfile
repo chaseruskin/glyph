@@ -1,8 +1,9 @@
-# Configures the scripts used with Orbit
+# Configures the Orbit profiles
 configure:
+    pip install git+https://github.com/chaseruskin/aquila.git@main
+    orbit config --push include="$(aquila-config --config-path)"
     pip install git+https://github.com/chaseruskin/verb.git@main
     orbit config --push include="$(verb-config --config-path)"
-    orbit config --push include="$(aquila-config --config-path)"
 
 # Run the suite of hardware simulations
 test:
