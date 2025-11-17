@@ -11,4 +11,4 @@ keywords = ["ecc", "code"]
 part = "10M50DAF484C7G"
 
 [dependencies]
-steel = { version = "0.1.0", path = "../../hyperspace-labs/steel" }
+steel = "0.1"
