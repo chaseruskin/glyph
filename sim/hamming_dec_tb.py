@@ -17,7 +17,7 @@ class HammingDec(Model):
         self.ded = Signal()
         super().mirror()
         self._code = HammingCodec(self.K.value)
-        print('HAMMING CODE: ('+str(self._code.get_total_bits_len())+', '+str(self._code.get_data_bits_len())+')')
+        vb.debug('HAMMING CODE: ('+str(self._code.get_total_bits_len())+', '+str(self._code.get_data_bits_len())+')')
         self._secret = 0
         self._packet = None
 

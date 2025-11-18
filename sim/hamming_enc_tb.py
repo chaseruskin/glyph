@@ -14,7 +14,7 @@ class HammingEnc(Model):
         self.code = Signal()
         super().mirror()
         self._code = HammingCodec(self.K.value)
-        print('HAMMING CODE: ('+str(self._code.get_total_bits_len())+', '+str(self._code.get_data_bits_len())+')')
+        vb.debug('HAMMING CODE: ('+str(self._code.get_total_bits_len())+', '+str(self._code.get_data_bits_len())+')')
 
     def define_coverage(self):
         from verb.coverage import CoverRange
