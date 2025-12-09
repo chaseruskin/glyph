@@ -7,12 +7,12 @@ name = "glyph"
 version = "0.1.0"
 uuid = "cegyya7j6lsn78ftvos7pv5me"
 source = "https://github.com/chaseruskin/glyph.git"
-dependencies = ["steel+7hex7l1oem1qefisd25jkcni2:0.1"]
+dependencies = ["steel+7hex7l1oem1qefisd25jkcni2:1.0"]
 
 [[project]]
 name = "steel"
-version = "0.1.0"
+version = "1.0.0"
 uuid = "7hex7l1oem1qefisd25jkcni2"
-checksum = "86c6654f3cac630d1103b35b7ba3c46281eaa9fd992b813161a8fb02f23e180c"
 source = "https://github.com/hyperspace-labs/steel.git"
+path = "../hysplabs/steel"
 dependencies = []

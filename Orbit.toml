@@ -3,9 +3,33 @@ name = "glyph"
 uuid = "cegyya7j6lsn78ftvos7pv5me"
 version = "0.1.0"
 description = "Error-correction codes"
-repository = "https://github.com/chaseruskin/glyph.git"
-public = ["rtl"]
+source = "https://github.com/chaseruskin/glyph.git"
+public = ["src"]
 keywords = ["ecc", "code"]
 
 [dependencies]
-steel = "0.1"
+steel = "1.0"
+
+
+[[project.metadata.test]]
+dut = "parity"
+trials = [
+    { generics = { W = 5, EVEN = true } },
+    { generics = { W = 8, EVEN = false } },
+]
+
+[[project.metadata.test]]
+dut = "hamming_enc"
+trials = [
+    { generics = { K = 4 } },
+    { generics = { K = 32 } },
+    { generics = { K = 64 } },
+]
+
+[[project.metadata.test]]
+dut = "hamming_dec"
+trials = [
+    { generics = { K = 4 } },
+    { generics = { K = 32 } },
+    { generics = { K = 64 } },
+]

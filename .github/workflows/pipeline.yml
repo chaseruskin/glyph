@@ -27,4 +27,4 @@ jobs:
         with:
           name: test
           path: |
-            target/goku/regressions
+            target/goku/results
