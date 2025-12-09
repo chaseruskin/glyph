@@ -11,4 +11,4 @@ test:
 
 # Run the suite of tests for the software models themselves
 test-sw:          
-    python -m unittest discover -s sim -p "*.py"
+    python3 -m unittest discover -s tests -p "*.py"
